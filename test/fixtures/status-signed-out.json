@@ -1,0 +1,11 @@
+{
+  "schema": "quantic.cli/status/v1",
+  "fetched_at": "2026-10-15T09:00:00Z",
+  "stale": false,
+  "signed_in": false,
+  "portfolio": null,
+  "next": null,
+  "this_month": null,
+  "upcoming": [],
+  "errors": []
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "quantic.cli/status/v1",
+  "fetched_at": "2026-10-15T09:00:00Z",
+  "stale": true,
+  "signed_in": true,
+  "portfolio": "Pension",
+  "next": {
+    "symbol": "VZ",
+    "name": "Verizon Communications",
+    "event": "pay_date",
+    "date": "2026-10-16",
+    "in_days": 1,
+    "expected": null,
+    "portfolio": "Pension"
+  },
+  "this_month": {
+    "month": "2026-10",
+    "received": [],
+    "projected": null,
+    "net_of_withholding": false
+  },
+  "upcoming": [
+    {
+      "symbol": "VZ",
+      "name": "Verizon Communications",
+      "held": true,
+      "ex_date": "2026-10-09",
+      "pay_date": "2026-10-16",
+      "shares": "220",
+      "per_share": null,
+      "expected": null,
+      "expected_net": null,
+      "portfolio": "Pension"
+    }
+  ],
+  "errors": [
+    {
+      "part": "income",
+      "message": "Something went wrong."
+    }
+  ]
+}

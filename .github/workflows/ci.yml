@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # In a zone with daylight saving, so a count of days that goes through
+      # local time fails on the day the clocks change. UTC has no such day.
+      - name: Model.js tests
+        run: node --test
+        env:
+          TZ: Europe/Madrid
+
+      - name: Manifest
+        run: node test/manifest.js
+
+      # The contract between the CLI and the widget is quantic.cli/status/v1,
+      # pinned on the CLI's side by its golden file. The tests here run on a
+      # copy of it: when the CLI's changes, this fails, and the copy and the
+      # widget are updated together (quantic-cli design §11).
+      - name: Same status.json as quantic-cli
+        run: |
+          curl -fsS https://raw.githubusercontent.com/fleveque/quantic-cli/main/internal/cli/testdata/golden/status.json -o /tmp/cli-status.json
+          if ! diff -u /tmp/cli-status.json test/fixtures/status.json; then
+            echo "::error file=test/fixtures/status.json::quantic-cli's golden status.json changed: copy it here and check the widget still reads it."
+            exit 1
+          fi
