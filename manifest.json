@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "fleveque.quantic",
+  "name": "Quantic",
+  "version": "0.1.0",
+  "author": "Francesc Leveque",
+  "license": "MIT",
+  "description": "Your next dividend in the Omarchy bar, and the next two weeks in a panel, from Quantic Finance through quantic-cli.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Quantic",
+    "description": "Your next ex-dividend date or payment; the panel has the next 14 days and this month's income.",
+    "category": "Info",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "refreshMinutes": 10,
+      "portfolio": "",
+      "showAmounts": "Off",
+      "command": "quantic"
+    },
+    "schema": [
+      { "key": "refreshMinutes", "type": "integer", "label": "Refresh interval (minutes)", "min": 5, "max": 1440, "step": 5, "defaultValue": 10 },
+      { "key": "portfolio", "type": "string", "label": "Portfolio", "defaultValue": "", "description": "One portfolio, by name or slug. Empty: all of them, and your radar." },
+      { "key": "showAmounts", "type": "enum", "label": "Show amounts in the bar", "options": ["Off", "On"], "defaultValue": "Off", "description": "The bar is visible when you share your screen. The panel always shows amounts." },
+      { "key": "command", "type": "path", "label": "quantic command", "defaultValue": "quantic", "description": "The quantic binary: a name on PATH, or a full path such as ~/go/bin/quantic." }
+    ]
+  }
+}
