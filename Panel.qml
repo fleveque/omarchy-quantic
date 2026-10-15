@@ -12,8 +12,8 @@ import "Model.js" as Model
 // and lays things out.
 Panel {
   id: root
-  moduleName: "fleveque.quantic"
-  ipcTarget: "fleveque.quantic"
+  moduleName: "io.github.fleveque.quantic"
+  ipcTarget: "io.github.fleveque.quantic"
   manageIpc: false
 
   property var anchorItem: null
@@ -220,7 +220,7 @@ Panel {
             wrapMode: Text.Wrap
             text: {
               switch (root.run.state) {
-              case "not_installed": return "quantic isn't installed, or isn't on the shell's PATH. `go install github.com/fleveque/quantic-cli/cmd/quantic@latest` puts it in ~/go/bin, which usually isn't: point the widget at it with\nomarchy bar set fleveque.quantic command ~/go/bin/quantic"
+              case "not_installed": return "quantic isn't installed, or isn't on the shell's PATH. Put it in ~/.local/bin (github.com/fleveque/quantic-cli/releases), or point the widget at it:\nomarchy bar set io.github.fleveque.quantic command ~/go/bin/quantic"
               case "signed_out": return "Not signed in. In a terminal: quantic auth login"
               case "offline": return "Quantic can't be reached, and nothing is cached yet."
               }

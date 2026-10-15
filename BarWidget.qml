@@ -7,7 +7,7 @@ import qs.Ui
 // panel can never disagree.
 BarWidget {
   id: root
-  moduleName: "fleveque.quantic"
+  moduleName: "io.github.fleveque.quantic"
 
   readonly property var pill: panelLoader.item ? panelLoader.item.pill : null
 
