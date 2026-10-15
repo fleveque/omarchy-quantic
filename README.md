@@ -5,7 +5,7 @@ from [Quantic Finance](https://quantic.finance).
 
 ![The bar: O ex-div in 3 days](docs/screenshots/pill.png)
 
-![The panel: the next event, October's income, and the next 14 days](docs/screenshots/panel.png)
+![The panel: the next event, October's income, and the next 14 days](preview.png)
 
 It's a thin widget over [quantic-cli](https://github.com/fleveque/quantic-cli). Every few minutes it
 runs `quantic status --json` and shows what comes back. The CLI handles everything else: signing
@@ -41,28 +41,41 @@ pill adds what that dividend should pay:
 
 ## Install
 
-1. Install [quantic-cli](https://github.com/fleveque/quantic-cli#try-it) and sign in:
+1. **Install [quantic-cli](https://github.com/fleveque/quantic-cli) and sign in.** The widget needs
+   the `quantic` command. Put it in `~/.local/bin`, which Omarchy keeps on its shell's `PATH`, so the
+   widget finds it with no setting. From the
+   [latest release](https://github.com/fleveque/quantic-cli/releases/latest), download
+   `quantic_<version>_linux_amd64.tar.gz` (or `linux_arm64`) and `checksums.txt`, then:
 
    ```
-   go install github.com/fleveque/quantic-cli/cmd/quantic@latest
+   sha256sum --check --ignore-missing checksums.txt
+   tar xzf quantic_*_linux_*.tar.gz quantic
+   install -Dm755 quantic ~/.local/bin/quantic
    quantic auth login
    quantic status            # check it works
    ```
 
-2. Add the widget:
+   Or, with Go 1.27 or later:
+
+   ```
+   GOBIN=~/.local/bin go install github.com/fleveque/quantic-cli/cmd/quantic@latest
+   ```
+
+   An Arch package, `quantic-cli-bin`, is ready but not yet published: the AUR isn't accepting new
+   accounts. When it is, this step becomes `yay -S quantic-cli-bin`.
+
+2. **Add the widget:**
 
    ```
    omarchy plugin add https://github.com/fleveque/omarchy-quantic.git --enable
    ```
 
-3. `go install` puts `quantic` in `~/go/bin`, which usually isn't on the Omarchy shell's `PATH`.
-   Point the widget at it:
+3. **Only if `quantic` is somewhere else** (a plain `go install` puts it in `~/go/bin`), point the
+   widget at it:
 
    ```
-   omarchy bar set fleveque.quantic command ~/go/bin/quantic
+   omarchy bar set io.github.fleveque.quantic command ~/go/bin/quantic
    ```
-
-   (Once quantic-cli has packages, from its milestone 7, this step goes away.)
 
 Plugins run inside the Omarchy shell, unsandboxed: read the code before enabling it. It's
 `Model.js`, `Panel.qml` and `BarWidget.qml`, about 700 lines. The widget runs only `which` and
@@ -71,7 +84,7 @@ and makes no network calls of its own.
 
 ## Settings
 
-Each one is set with `omarchy bar set fleveque.quantic <key> <value>`:
+Each one is set with `omarchy bar set io.github.fleveque.quantic <key> <value>`:
 
 | Key | Default | |
 |---|---|---|
@@ -79,6 +92,15 @@ Each one is set with `omarchy bar set fleveque.quantic <key> <value>`:
 | `portfolio` | empty | one portfolio by name or slug; empty is all of them, and your radar |
 | `showAmounts` | `Off` | `On` adds the next dividend's amount to the pill |
 | `command` | `quantic` | the quantic binary: a name on `PATH`, or a path (`~/` works) |
+
+## Remove
+
+```
+omarchy plugin remove io.github.fleveque.quantic
+```
+
+That removes the widget. quantic-cli is separate: `quantic auth logout` deletes your token from the
+keyring and empties its cache, and `rm ~/.local/bin/quantic` removes the command.
 
 ## The contract
 
@@ -102,10 +124,10 @@ panel's rows. It's plain JavaScript that the QML imports and node tests. The QML
 process and lays things out, and it's checked by hand. To load a checkout into the shell:
 
 ```
-ln -s "$PWD" ~/.config/omarchy/plugins/fleveque.quantic
+ln -s "$PWD" ~/.config/omarchy/plugins/io.github.fleveque.quantic
 omarchy-shell shell rescanPlugins
-omarchy plugin enable fleveque.quantic
-omarchy-shell fleveque.quantic refresh     # ask again now
+omarchy plugin enable io.github.fleveque.quantic
+omarchy-shell io.github.fleveque.quantic refresh     # ask again now
 ```
 
 `main` is protected: every change goes through a pull request, and CI must pass before merge.
