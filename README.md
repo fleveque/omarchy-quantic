@@ -49,7 +49,7 @@ pill adds what that dividend should pay:
 
    ```
    curl -fLO https://github.com/fleveque/quantic-cli/releases/download/v0.1.1/quantic_0.1.1_linux_amd64.tar.gz
-   echo "SHA256_AMD64  quantic_0.1.1_linux_amd64.tar.gz" | sha256sum --check
+   echo "0599bd1e4215421c244058fd850d13ff8fb08c0ace2b2a54c214c22099b4a420  quantic_0.1.1_linux_amd64.tar.gz" | sha256sum --check
    tar xzf quantic_0.1.1_linux_amd64.tar.gz quantic
    install -Dm755 quantic ~/.local/bin/quantic
    quantic auth login
@@ -57,7 +57,7 @@ pill adds what that dividend should pay:
    ```
 
    On ARM, the archive is `quantic_0.1.1_linux_arm64.tar.gz`, and its SHA-256 is
-   `SHA256_ARM64`.
+   `a8eb093958167be4fa9bf892a6bac30e390ebfe26d070ec49720e0c7af2a43d0`.
 
    Or, with Go 1.27 or later:
 
