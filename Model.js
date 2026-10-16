@@ -202,9 +202,14 @@ function rows(doc, today) {
 }
 
 // problems are the parts of the document that failed, for the panel:
-// "income: Something went wrong."
-function problems(doc) {
-  return ((doc && doc.errors) || []).map(function(e) { return e.part + ": " + e.message })
+// "income: Something went wrong." A quantic older than 0.1.1 ignores
+// QUANTIC_PORTFOLIO and answers for all portfolios: the document says so
+// with no portfolio in it.
+function problems(doc, portfolio) {
+  var out = ((doc && doc.errors) || []).map(function(e) { return e.part + ": " + e.message })
+  if (doc && !doc.portfolio && String(portfolio || "").trim() !== "")
+    out.push("portfolio: showing all of them; the Portfolio setting needs quantic-cli 0.1.1 or later.")
+  return out
 }
 
 // refreshMinutes is the setting, never under 5: the widget shouldn't ask
@@ -217,13 +222,17 @@ function refreshMinutes(setting) {
 
 // command is the argument list for one refresh. A path setting can start
 // with ~/, which no shell is there to expand: home is $HOME.
-function command(binary, portfolio, home) {
+function command(binary, home) {
   var b = String(binary || "").trim() || "quantic"
   if (b.indexOf("~/") === 0 && home) b = home + b.slice(1)
-  var args = [b, "status", "--json"]
-  var p = String(portfolio || "").trim()
-  if (p !== "") args.push("--portfolio", p)
-  return args
+  return [b, "status", "--json"]
+}
+
+// environment adds the portfolio to quantic's environment, never to its
+// arguments: any local user can read those in ps, and only you can read the
+// environment. Empty is all of them, whatever the shell's own environment says.
+function environment(portfolio) {
+  return { QUANTIC_PORTFOLIO: String(portfolio || "").trim() }
 }
 
 if (typeof module !== "undefined") {
@@ -242,6 +251,7 @@ if (typeof module !== "undefined") {
     rows: rows,
     problems: problems,
     refreshMinutes: refreshMinutes,
-    command: command
+    command: command,
+    environment: environment
   }
 }
