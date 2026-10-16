@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "io.github.fleveque.quantic",
   "name": "Quantic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Francesc Leveque",
   "license": "MIT",
   "description": "Your next dividend in the Omarchy bar, and the next two weeks in a panel, from Quantic Finance through quantic-cli.",

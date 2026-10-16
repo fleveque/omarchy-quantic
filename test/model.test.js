@@ -131,6 +131,13 @@ test("problems name the part that failed", () => {
   assert.deepEqual(Model.problems(ok("status.json").doc), [])
 })
 
+test("a quantic that ignored the portfolio is a problem", () => {
+  assert.deepEqual(Model.problems(ok("status.json").doc, "Pension"),
+    ["portfolio: showing all of them; the Portfolio setting needs quantic-cli 0.1.1 or later."])
+  assert.deepEqual(Model.problems(ok("status-partial.json").doc, "Pension"), ["income: Something went wrong."])
+  assert.deepEqual(Model.problems(ok("status.json").doc, " "), [])
+})
+
 test("money as quantic sent it, with a symbol when there is one", () => {
   assert.equal(Model.formatMoney({ amount: "0.2736", currency: "USD" }), "$0.2736")
   assert.equal(Model.formatMoney({ amount: "12.00", currency: "CHF" }), "12.00 CHF")
@@ -153,11 +160,17 @@ test("refresh is never more often than every 5 minutes", () => {
   assert.equal(Model.refreshMinutes(30), 30)
 })
 
-test("the command, with a portfolio only when one is set", () => {
-  assert.deepEqual(Model.command("quantic", ""), ["quantic", "status", "--json"])
-  assert.deepEqual(Model.command("", " Pension "), ["quantic", "status", "--json", "--portfolio", "Pension"])
-  assert.deepEqual(Model.command("/home/me/go/bin/quantic", null), ["/home/me/go/bin/quantic", "status", "--json"])
-  assert.deepEqual(Model.command("~/go/bin/quantic", "", "/home/me"), ["/home/me/go/bin/quantic", "status", "--json"])
+test("the command never names the portfolio", () => {
+  assert.deepEqual(Model.command("quantic"), ["quantic", "status", "--json"])
+  assert.deepEqual(Model.command(""), ["quantic", "status", "--json"])
+  assert.deepEqual(Model.command("/home/me/go/bin/quantic"), ["/home/me/go/bin/quantic", "status", "--json"])
+  assert.deepEqual(Model.command("~/go/bin/quantic", "/home/me"), ["/home/me/go/bin/quantic", "status", "--json"])
+})
+
+test("the portfolio goes in the environment, empty for all of them", () => {
+  assert.deepEqual(Model.environment(" Pension "), { QUANTIC_PORTFOLIO: "Pension" })
+  assert.deepEqual(Model.environment(""), { QUANTIC_PORTFOLIO: "" })
+  assert.deepEqual(Model.environment(null), { QUANTIC_PORTFOLIO: "" })
 })
 
 test("shortTime: the time today, the date as well otherwise", () => {

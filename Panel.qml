@@ -30,14 +30,16 @@ Panel {
 
   readonly property bool showAmounts: String(setting("showAmounts", "Off")) === "On"
   readonly property int refreshMinutes: Model.refreshMinutes(setting("refreshMinutes", 10))
-  readonly property var command: Model.command(String(setting("command", "quantic")), String(setting("portfolio", "")), Quickshell.env("HOME"))
+  readonly property string portfolio: String(setting("portfolio", ""))
+  readonly property var command: Model.command(String(setting("command", "quantic")), Quickshell.env("HOME"))
+  readonly property var environment: Model.environment(portfolio)
 
   readonly property var pill: run.state === "loading"
     ? ({ icon: Model.ICON, text: "", dim: true, keyMark: false, tooltip: "Asking Quantic…" })
     : Model.pill(run, showAmounts, today)
   readonly property var monthInfo: Model.month(run.doc)
   readonly property var rowList: Model.rows(run.doc, today)
-  readonly property var problemList: Model.problems(run.doc)
+  readonly property var problemList: Model.problems(run.doc, portfolio)
 
   readonly property color foreground: bar ? bar.foreground : Color.foreground
   readonly property color dim: Qt.darker(foreground, 1.5)
@@ -45,6 +47,7 @@ Panel {
 
   // When the settings change what to run, run it.
   onCommandChanged: Qt.callLater(refresh)
+  onEnvironmentChanged: Qt.callLater(refresh)
 
   function refresh() {
     today = Qt.formatDate(new Date(), "yyyy-MM-dd")
@@ -86,6 +89,7 @@ Panel {
       root.installed = exitCode === 0
       if (root.installed) {
         statusProc.command = root.command
+        statusProc.environment = root.environment
         statusProc.running = true
       } else {
         root.run = Model.parseRun(false, 0, "", "")

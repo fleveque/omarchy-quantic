@@ -41,24 +41,28 @@ pill adds what that dividend should pay:
 
 ## Install
 
-1. **Install [quantic-cli](https://github.com/fleveque/quantic-cli) and sign in.** The widget needs
-   the `quantic` command. Put it in `~/.local/bin`, which Omarchy keeps on its shell's `PATH`, so the
-   widget finds it with no setting. From the
-   [latest release](https://github.com/fleveque/quantic-cli/releases/latest), download
-   `quantic_<version>_linux_amd64.tar.gz` (or `linux_arm64`) and `checksums.txt`, then:
+1. **Install [quantic-cli](https://github.com/fleveque/quantic-cli) v0.1.1 and sign in.** The
+   widget needs the `quantic` command. Put it in `~/.local/bin`, which Omarchy keeps on its shell's
+   `PATH`, so the widget finds it with no setting. This plugin is reviewed with
+   [v0.1.1](https://github.com/fleveque/quantic-cli/releases/tag/v0.1.1), so install that release
+   and check it against the checksum here, not one you download with it. On x86-64:
 
    ```
-   sha256sum --check --ignore-missing checksums.txt
-   tar xzf quantic_*_linux_*.tar.gz quantic
+   curl -fLO https://github.com/fleveque/quantic-cli/releases/download/v0.1.1/quantic_0.1.1_linux_amd64.tar.gz
+   echo "0599bd1e4215421c244058fd850d13ff8fb08c0ace2b2a54c214c22099b4a420  quantic_0.1.1_linux_amd64.tar.gz" | sha256sum --check
+   tar xzf quantic_0.1.1_linux_amd64.tar.gz quantic
    install -Dm755 quantic ~/.local/bin/quantic
    quantic auth login
    quantic status            # check it works
    ```
 
+   On ARM, the archive is `quantic_0.1.1_linux_arm64.tar.gz`, and its SHA-256 is
+   `a8eb093958167be4fa9bf892a6bac30e390ebfe26d070ec49720e0c7af2a43d0`.
+
    Or, with Go 1.27 or later:
 
    ```
-   GOBIN=~/.local/bin go install github.com/fleveque/quantic-cli/cmd/quantic@latest
+   GOBIN=~/.local/bin go install github.com/fleveque/quantic-cli/cmd/quantic@v0.1.1
    ```
 
    An Arch package, `quantic-cli-bin`, is ready but not yet published: the AUR isn't accepting new
@@ -80,7 +84,9 @@ pill adds what that dividend should pay:
 Plugins run inside the Omarchy shell, unsandboxed: read the code before enabling it. It's
 `Model.js`, `Panel.qml` and `BarWidget.qml`, about 700 lines. The widget runs only `which` and
 `quantic status --json`, plus `xdg-open https://quantic.finance` when you ask it to. It has no token
-and makes no network calls of its own.
+and makes no network calls of its own. The `portfolio` setting reaches `quantic` as
+`QUANTIC_PORTFOLIO` in its environment, which only you can read, never in its arguments, which
+anyone on the machine can see with `ps`.
 
 ## Settings
 
@@ -89,7 +95,7 @@ Each one is set with `omarchy bar set io.github.fleveque.quantic <key> <value>`:
 | Key | Default | |
 |---|---|---|
 | `refreshMinutes` | `10` | how often to ask; never under 5 |
-| `portfolio` | empty | one portfolio by name or slug; empty is all of them, and your radar |
+| `portfolio` | empty | one portfolio by name or slug; empty is all of them, and your radar. Needs quantic-cli 0.1.1 |
 | `showAmounts` | `Off` | `On` adds the next dividend's amount to the pill |
 | `command` | `quantic` | the quantic binary: a name on `PATH`, or a path (`~/` works) |
 
