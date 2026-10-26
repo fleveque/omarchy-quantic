@@ -65,9 +65,6 @@ pill adds what that dividend should pay:
    GOBIN=~/.local/bin go install github.com/fleveque/quantic-cli/cmd/quantic@v0.1.1
    ```
 
-   An Arch package, `quantic-cli-bin`, is ready but not yet published: the AUR isn't accepting new
-   accounts. When it is, this step becomes `yay -S quantic-cli-bin`.
-
 2. **Add the widget:**
 
    ```
